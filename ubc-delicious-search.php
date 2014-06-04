@@ -167,13 +167,25 @@ class UBC_Delicious_Search {
 		return "";
 	}
 	
+	/**
+	 * creates the div where the results should show
+	 *
+	 * @access public
+	 * @param array $atts 
+	 * @param string $content
+	 * @return string
+	 *
+	 *@TODO
+	 * - need to give errors when leaving default user blank.  Maybe make it into settings???
+	 *
+	 */ 
 	function ubc_delicious_results($atts, $content = null) {
 		$this->ubc_delicious_attributes['result'] = shortcode_atts(array(
 			'limit' => 20,
 			'defaulttag' => '',
-			'defaultuser' => 'eubc'
+			'defaultuser' => ''
 		), $atts);
-		
+
 		echo	'<div class="ubc_delicious_results resource_listings" '.
 				'data-defaulttag="'.esc_attr($this->ubc_delicious_attributes['result']['defaulttag']).'" '.
 				'data-user="'.esc_attr($this->ubc_delicious_attributes['result']['defaultuser']).'" '.

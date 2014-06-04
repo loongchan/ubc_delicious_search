@@ -2,7 +2,7 @@ jQuery(document).ready(function() {
 	var default_user = encodeURIComponent(jQuery('.resource_listings').data('user')); 
 	var default_limit = encodeURIComponent(jQuery('.resource_listings').data('limit')); 
 	var default_tag = encodeURIComponent(jQuery('.resource_listings').data('defaulttag'));
-	var feed_url = 'http://feeds.delicious.com/v2/json/'+default_user;
+	var feed_url = 'http://feeds.delicious.com/v2/json/'+default_user; //left it here so that if search is destroyed, we can still use filters
 	var search_url = 'https://avosapi.delicious.com/api/v1/posts/public/'+default_user+'/time?&limit='+default_limit+'&has_all=true';
 
 	//initial submission of query.
@@ -18,14 +18,14 @@ jQuery(document).ready(function() {
 		var search_term = encodeURIComponent(jQuery('#ubc-delicious-search-term').val());
 		var tags = get_all_current_tags(true);
 		var query_url = search_url;
-		
+
 		//figure out search_url
 		if (search_term.length) {
-			query_url = query_url + '&keyword='+search_term + (tags.length > 0 ? '&tags='+tags : '');
+			query_url = query_url + '&keywords='+search_term + (tags.length > 0 ? '&tags='+tags : '');
 		} else {
 			query_url = query_url + (tags.length > 0 ? '&tags='+tags.replace('+',',') : '');
 		}
-		
+
 		submit_delicious_query(query_url);
   	});
   	  	
@@ -74,7 +74,7 @@ jQuery(document).ready(function() {
 	        	
 				//delete everything
 	    		write_area.empty().children().remove().empty();
-	    		
+
 	    		if (jQuery(jsonp.pkg).length == 0) {
 	        		write_area.append('sorry, no results, please broaden search parameters');
 	        	} else {
