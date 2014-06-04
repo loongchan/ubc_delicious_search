@@ -186,7 +186,7 @@ class UBC_Delicious_Search {
 			'defaultuser' => ''
 		), $atts);
 
-		echo	'<div class="ubc_delicious_results resource_listings" '.
+		return	'<div class="ubc_delicious_results resource_listings" '.
 				'data-defaulttag="'.esc_attr($this->ubc_delicious_attributes['result']['defaulttag']).'" '.
 				'data-user="'.esc_attr($this->ubc_delicious_attributes['result']['defaultuser']).'" '.
 				'data-limit="'.esc_attr($this->ubc_delicious_attributes['result']['limit']).'"></div>';
