@@ -83,29 +83,45 @@ class UBC_Delicious_Search {
 		wp_enqueue_script('ubc-delicious-search');
 		wp_enqueue_style('ubc-delicious-search');
 		
+		$return_val = '';
+		
 		$this->ubc_delicious_attributes['search'] = shortcode_atts(array(
 				'placeholder'	=> "Search Words",	//input placeholder 
 				'submittext'	=> "Submit",		//submit button text
-				'searchtitle'	=> "Search"			//search title text
+				'searchtitle'	=> "Search",		//search title text
+				'extraclasses' => '',
+				'buttonclasses' => ''
 		), $atts );
 
-		$placeholder = $this->ubc_delicious_attributes['search']['placeholder'];
-		$submittext = $this->ubc_delicious_attributes['search']['submittext'];
-		$searchtitle = $this->ubc_delicious_attributes['search']['searchtitle'];
+		//escaping stuff
+		$placeholder = esc_attr(trim($this->ubc_delicious_attributes['search']['placeholder']));
+		$submittext = esc_html(trim($this->ubc_delicious_attributes['search']['submittext']));
+		$searchtitle = esc_html(trim($this->ubc_delicious_attributes['search']['searchtitle']));
+		$extraclasses = esc_attr(trim($this->ubc_delicious_attributes['search']['extraclasses']));
+		$buttonclasses = esc_attr(trim($this->ubc_delicious_attributes['search']['buttonclasses']));
+		
 		ob_start();
 		?>
-		<div class="ubc-delicious-search-area">
-			<label class="ubc-delicious-search-title"><?php echo $searchtitle;?></label>
-			<input type="text" id="ubc-delicious-search-term" name="ubc-delicious-search-term" placeholder="<?php echo $placeholder;?>">
-			<?php
-				if (!is_null($content)) {
-					do_shortcode($content);
-				}
-			?>		
-			<input type="submit" id="ubc-delicious-submit">
-		</div> <!-- end of ubc-delicious-search-area -->
+		<div class="ubc-delicious-search-area-container">
+			<div class="ubc-dellicious-search-area <?php echo $extraclasses;?>">
+				<label class="ubc-delicious-search-title"><span class="ubc-delicious-label-title"><?php echo $searchtitle;?></span>
+					<input type="text" id="ubc-delicious-search-term" name="ubc-delicious-search-term" placeholder="<?php echo $placeholder;?>">
+				</label>
+			</div>
 		<?php 
-		return ob_get_clean();
+			$return_val .= ob_get_clean();
+			 if (!is_null($content)) {
+				$return_val .= do_shortcode($content);
+			}
+			ob_start();
+		?>
+		<div class="ubc-delicious-search-submit-area">
+				<button <?php echo !empty($buttonclasses) ? 'class="'.$buttonclasses.'"' : '';?> type="submit" id="ubc-delicious-submit" ><?php if (!empty($submittext)) { echo $submittext;}?></button>
+			</div>
+		</div><!-- end of ubc-delicious-search-area-container -->
+		<?php 
+		$return_val .= ob_get_clean();
+		return $return_val;
 	}
 	
 	/**
@@ -123,10 +139,18 @@ class UBC_Delicious_Search {
 
 		$this->ubc_delicious_attributes['dropdown'] = shortcode_atts(array(
 			'useshowall' => 'Show All',		//if false or empty, then don't use show all option, else show the text
-			'optionslist' => '',				//list of options
+			'optionslist' => '',			//list of options
 			'defaultoption' => '',			//selected VALUE of option to make default
-			'optiontitle' => ''				//label for the dropdown
+			'optiontitle' => '',			//label for the dropdown
+			'extraclasses' => ''			//extra classes!
 		), $atts);
+
+		//escaping values 
+		$optiontitle = esc_html(trim($this->ubc_delicious_attributes['dropdown']['optiontitle']));
+		$extraclasses = esc_attr(trim($this->ubc_delicious_attributes['dropdown']['extraclasses']));
+		
+		//output for the function
+		$return_val = '';
 
 		//figure out and create options for the select
 		if (!empty($this->ubc_delicious_attributes['dropdown']['optionslist'])) {
@@ -152,19 +176,20 @@ class UBC_Delicious_Search {
 				$is_selected = trim($dropdown_raw[0]) == trim($this->ubc_delicious_attributes['dropdown']['defaultoption']);
 				$dropdown_options .= '<option '.($is_selected? 'selected="selected"':'').' value="'.esc_attr(trim($dropdown_raw[0])).'">'.esc_html(trim($dropdown_raw[1])).'</option>';
 			}
-
-			//output dropdown
+			ob_start();
 			?>
-			<div class="ubc-delicious-dropdown-area">
-				<label class="ubc-delicious-dropdown-label"><?php echo esc_html($this->ubc_delicious_attributes['dropdown']['optiontitle']);?></label>
-				<select class="ubc-delicious-dropdown">
-					<?php echo $dropdown_options;?>
-				</select>
+			<div class="ubc-delicious-dropdown-area <?php echo $extraclasses;?>">
+				<label class="ubc-delicious-dropdown-label"><span class="ubc-delicious-label-title"><?php echo $optiontitle;?></span>
+					<select class="ubc-delicious-dropdown">
+						<?php echo $dropdown_options;?>
+					</select>
+				</label>
 			</div>
 			<?php 
+			$return_val = ob_get_clean();
 		}		
 
-		return "";
+		return $return_val;
 	}
 	
 	/**
