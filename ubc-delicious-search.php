@@ -205,16 +205,25 @@ class UBC_Delicious_Search {
 	 *
 	 */ 
 	function ubc_delicious_results($atts, $content = null) {
+		//enqueue script/css
+		wp_enqueue_script('ubc-delicious-search');
+		wp_enqueue_style('ubc-delicious-search');
+		
 		$this->ubc_delicious_attributes['result'] = shortcode_atts(array(
 			'limit' => 20,
 			'defaulttag' => '',
-			'defaultuser' => ''
+			'defaultuser' => '',
+			'view' => 'list'
 		), $atts);
 
-		return	'<div class="ubc_delicious_results resource_listings" '.
-				'data-defaulttag="'.esc_attr($this->ubc_delicious_attributes['result']['defaulttag']).'" '.
-				'data-user="'.esc_attr($this->ubc_delicious_attributes['result']['defaultuser']).'" '.
-				'data-limit="'.esc_attr($this->ubc_delicious_attributes['result']['limit']).'"></div>';
+		$results = 	'<div class="ubc_delicious_results resource_listings" '.
+					'data-defaulttag="'.esc_attr($this->ubc_delicious_attributes['result']['defaulttag']).'" '.
+					'data-user="'.esc_attr($this->ubc_delicious_attributes['result']['defaultuser']).'" '.
+					'data-limit="'.esc_attr($this->ubc_delicious_attributes['result']['limit']).'" '.
+					'data-view="'.esc_attr($this->ubc_delicious_attributes['result']['view']).
+					'"></div>';
+		
+		return $results;
 	}
 }
 

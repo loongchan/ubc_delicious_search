@@ -3,7 +3,7 @@ jQuery(document).ready(function() {
 	var default_limit = encodeURIComponent(jQuery('.resource_listings').data('limit')); 
 	var default_tag = encodeURIComponent(jQuery('.resource_listings').data('defaulttag'));
 	var feed_url = 'http://feeds.delicious.com/v2/json/'+default_user; //left it here so that if search is destroyed, we can still use filters
-	var search_url = 'https://avosapi.delicious.com/api/v1/posts/public/'+default_user+'/time?&limit='+default_limit+'&has_all=true';
+	var search_url = 'https://avosapi.delicious.com/api/v1/posts/public/'+default_user+'/time?limit='+default_limit+'&has_all=true';
 
 	//initial submission of query.
 	submit_delicious_query(search_url+'&tags='+default_tag);
@@ -71,18 +71,46 @@ jQuery(document).ready(function() {
 	        dataType: 'jsonp',
 	        success: function (jsonp) {
 	        	var write_area = jQuery('.resource_listings');
-	        	
+				var view_type = encodeURIComponent(jQuery('.resource_listings').data('view'));
+				var return_string = '';
+
 				//delete everything
 	    		write_area.empty().children().remove().empty();
 
 	    		if (jQuery(jsonp.pkg).length == 0) {
 	        		write_area.append('sorry, no results, please broaden search parameters');
 	        	} else {
-		        	jQuery.each(jsonp.pkg, function(index, client) {
-		        		var title= client.title;
-		        		var linkURL = client.url;
-						write_area.append('<a target="_blank" href="'+linkURL+'">'+title+'</a><br>');			        	
-					});
+	        		switch (view_type) {
+	        			case 'list':
+	        			case 'list_unordered':
+	        			case 'list_ordered':
+	        				if (view_type != 'list_ordered') {
+	        					return_string += '<ul>';
+	        				} else {
+	        					return_string += '<ol>';
+							}
+							
+							jQuery.each(jsonp.pkg, function(index, client) {
+				        		var title= client.title;
+				        		var linkURL = client.url;
+								return_string += '<li><a target="_blank" href="'+linkURL+'">'+title+'</a></li>';
+							});
+							
+							if (view_type != 'list_ordered') {
+	        					return_string += '</ul>';
+	        				} else {
+	        					return_string += '</ol>';
+							}
+	        				break;
+	        			case 'links':
+						default:
+							jQuery.each(jsonp.pkg, function(index, client) {
+				        		var title= client.title;
+				        		var linkURL = client.url;
+								return_string += '<a target="_blank" href="'+linkURL+'">'+title+'</a><br>';
+							});
+					}	
+	        		write_area.append(return_string);
 		        }
 	        }
 	    });
