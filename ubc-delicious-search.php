@@ -88,24 +88,28 @@ class UBC_Delicious_Search {
 		$this->ubc_delicious_attributes['search'] = shortcode_atts(array(
 				'placeholder'	=> "Search Words",	//input placeholder 
 				'submittext'	=> "Submit",		//submit button text
+				'resettext' 	=> "Reset",			//reset button text, used ONLY if usereset is not false
 				'searchtitle'	=> "Search",		//search title text
-				'extraclasses' => '',
-				'buttonclasses' => ''
+				'extraclasses'	=> '',
+				'buttonclasses'	=> '',
+				'usereset'		=> 'true'
 		), $atts );
 
 		//escaping stuff
 		$placeholder = esc_attr(trim($this->ubc_delicious_attributes['search']['placeholder']));
 		$submittext = esc_html(trim($this->ubc_delicious_attributes['search']['submittext']));
+		$resettext = esc_html(trim($this->ubc_delicious_attributes['search']['resettext']));
 		$searchtitle = esc_html(trim($this->ubc_delicious_attributes['search']['searchtitle']));
 		$extraclasses = esc_attr(trim($this->ubc_delicious_attributes['search']['extraclasses']));
 		$buttonclasses = esc_attr(trim($this->ubc_delicious_attributes['search']['buttonclasses']));
+		$usereset = esc_attr(trim($this->ubc_delicious_attributes['search']['usereset']));
 		
 		ob_start();
 		?>
 		<div class="ubc-delicious-search-area-container">
 			<div class="ubc-dellicious-search-area <?php echo $extraclasses;?>">
 				<label class="ubc-delicious-search-title"><span class="ubc-delicious-label-title"><?php echo $searchtitle;?></span>
-					<input type="text" id="ubc-delicious-search-term" name="ubc-delicious-search-term" placeholder="<?php echo $placeholder;?>">
+					<input type="text" id="ubc-delicious-search-term" class="ubc-delicious-input" name="ubc-delicious-search-term" placeholder="<?php echo $placeholder;?>">
 				</label>
 			</div>
 		<?php 
@@ -116,6 +120,13 @@ class UBC_Delicious_Search {
 			ob_start();
 		?>
 		<div class="ubc-delicious-search-submit-area">
+				<?php 
+					if ($usereset != false && !empty($usereset)) {
+				?>
+					<button <?php echo !empty($buttonclasses) ? 'class="'.$buttonclasses.'"' : '';?> type="reset" id="ubc-delicious-reset" ><?php if (!empty($resettext)) { echo $resettext;}?></button>
+				<?php 
+					}
+				?>
 				<button <?php echo !empty($buttonclasses) ? 'class="'.$buttonclasses.'"' : '';?> type="submit" id="ubc-delicious-submit" ><?php if (!empty($submittext)) { echo $submittext;}?></button>
 			</div>
 		</div><!-- end of ubc-delicious-search-area-container -->
@@ -180,7 +191,7 @@ class UBC_Delicious_Search {
 			?>
 			<div class="ubc-delicious-dropdown-area <?php echo $extraclasses;?>">
 				<label class="ubc-delicious-dropdown-label"><span class="ubc-delicious-label-title"><?php echo $optiontitle;?></span>
-					<select class="ubc-delicious-dropdown">
+					<select class="ubc-delicious-dropdown ubc-delicious-input">
 						<?php echo $dropdown_options;?>
 					</select>
 				</label>
@@ -213,13 +224,15 @@ class UBC_Delicious_Search {
 			'limit' => 20,
 			'defaulttag' => '',
 			'defaultuser' => '',
-			'view' => 'list'
+			'view' => 'list',
+			'useor' => 'false'
 		), $atts);
 
 		$results = 	'<div class="ubc_delicious_results resource_listings" '.
 					'data-defaulttag="'.esc_attr($this->ubc_delicious_attributes['result']['defaulttag']).'" '.
 					'data-user="'.esc_attr($this->ubc_delicious_attributes['result']['defaultuser']).'" '.
 					'data-limit="'.esc_attr($this->ubc_delicious_attributes['result']['limit']).'" '.
+					'data-useor="'.esc_attr($this->ubc_delicious_attributes['result']['useor']).'" '.
 					'data-view="'.esc_attr($this->ubc_delicious_attributes['result']['view']).
 					'"></div>';
 		

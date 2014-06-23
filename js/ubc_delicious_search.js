@@ -2,8 +2,35 @@ jQuery(document).ready(function() {
 	var default_user = encodeURIComponent(jQuery('.resource_listings').data('user')); 
 	var default_limit = encodeURIComponent(jQuery('.resource_listings').data('limit')); 
 	var default_tag = encodeURIComponent(jQuery('.resource_listings').data('defaulttag'));
+	var default_useor = encodeURIComponent(jQuery('.resource_listings').data('useor'));
+	var reset_button =jQuery('#ubc-delicious-reset');
 	var feed_url = 'http://feeds.delicious.com/v2/json/'+default_user; //left it here so that if search is destroyed, we can still use filters
-	var search_url = 'https://avosapi.delicious.com/api/v1/posts/public/'+default_user+'/time?limit='+default_limit+'&has_all=true';
+	var search_url = 'https://avosapi.delicious.com/api/v1/posts/public/'+default_user+'/time?limit='+default_limit+'&has_all=true&tagsor='+default_useor;
+	
+	//if reset exists, then reset form
+	if (reset_button.length > 0) {
+		reset_button.click(function(e) {
+			//don't submit
+			e.preventDefault();
+			
+			//reset all non select inputs
+			jQuery('.ubc-delicious-input:not(select)').val('');	
+			
+			
+			//reset select boxes
+			jQuery('select.ubc-delicious-input').prop('selectedIndex', 0);
+			
+			//properly set selects with default
+			jQuery('select.ubc-delicious-input option').prop('selected', function() {
+				if (this.defaultSelected) {
+					return this.defaultSelected;
+				}
+			});
+			
+			//re-query again.  Since we are in reset, if it exists, then submit MUST exist
+			jQuery('#ubc-delicious-submit').click();
+		});
+	} 
 
 	//initial submission of query.
 	submit_delicious_query(search_url+'&tags='+default_tag);
