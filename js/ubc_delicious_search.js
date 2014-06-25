@@ -108,9 +108,17 @@ jQuery(document).ready(function() {
 	        		write_area.append('sorry, no results, please broaden search parameters');
 	        	} else {
 	        		switch (view_type) {
+	        			case 'links':
+							jQuery.each(jsonp.pkg, function(index, client) {
+				        		var title= client.title;
+				        		var linkURL = client.url;
+								return_string += '<a target="_blank" href="'+linkURL+'">'+title+'</a><br>';
+							});
+							break;
 	        			case 'list':
 	        			case 'list_unordered':
 	        			case 'list_ordered':
+						default:
 	        				if (view_type != 'list_ordered') {
 	        					return_string += '<ul>';
 	        				} else {
@@ -129,13 +137,6 @@ jQuery(document).ready(function() {
 	        					return_string += '</ol>';
 							}
 	        				break;
-	        			case 'links':
-						default:
-							jQuery.each(jsonp.pkg, function(index, client) {
-				        		var title= client.title;
-				        		var linkURL = client.url;
-								return_string += '<a target="_blank" href="'+linkURL+'">'+title+'</a><br>';
-							});
 					}	
 	        		write_area.append(return_string);
 		        }
@@ -164,7 +165,7 @@ jQuery(document).ready(function() {
 		});
 		
 		//if no options are selected, then it will default to the page's default tag (aka unit tag)
-		if (tags.length == 0 && use_default) {
+		if (use_default) {
 			tags.push(default_tag);
 		}
 
