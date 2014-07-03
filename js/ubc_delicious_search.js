@@ -98,18 +98,45 @@ jQuery(document).ready(function() {
 	        dataType: 'jsonp',
 	        success: function (jsonp) {
 	        	var write_area = jQuery('.resource_listings');
-				var view_type = encodeURIComponent(jQuery('.resource_listings').data('view'));
 				var return_string = '';
 
 				//delete everything
 	    		write_area.empty().children().remove().empty();
-
+	    		
+				//display data
 	    		if (jQuery(jsonp.pkg).length == 0) {
 	        		write_area.append('sorry, no results, please broaden search parameters');
 	        	} else {
+					var view_type = encodeURIComponent(jQuery('.resource_listings').data('view'));        	
+					var sort_order = encodeURIComponent(jQuery('.resource_listings').data('sort'));
+       	
+	        		//sort data according to sort_order
+	        		var new_pkg = jsonp.pkg.concat();
+        			switch (sort_order) {
+        				case 'alpha':
+        					new_pkg.sort(function(a,b) {
+								var A = a.title.toLowerCase();
+								var B = b.title.toLowerCase();
+								if (A < B){
+								   return -1;
+								}else if (A > B){
+								  return  1;
+								}
+								return 0;
+        					});
+        					break;
+        				case 'rank':
+        				default:
+        					new_pkg.sort(function(a,b) {
+        						return parseInt(b.save_rank) - parseInt(a.save_rank)
+        					});
+        					break;
+					}
+	        	
+	        		//create links
 	        		switch (view_type) {
 	        			case 'links':
-							jQuery.each(jsonp.pkg, function(index, client) {
+							jQuery.each(new_pkg, function(index, client) {
 				        		var title= client.title;
 				        		var linkURL = client.url;
 								return_string += '<a target="_blank" href="'+linkURL+'">'+title+'</a><br>';
@@ -125,7 +152,7 @@ jQuery(document).ready(function() {
 	        					return_string += '<ol>';
 							}
 							
-							jQuery.each(jsonp.pkg, function(index, client) {
+							jQuery.each(new_pkg, function(index, client) {
 				        		var title= client.title;
 				        		var linkURL = client.url;
 								return_string += '<li><a target="_blank" href="'+linkURL+'">'+title+'</a></li>';

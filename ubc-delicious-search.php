@@ -225,7 +225,8 @@ class UBC_Delicious_Search {
 			'defaulttag' => '',
 			'defaultuser' => '',
 			'view' => 'list',
-			'useor' => 'false'
+			'useor' => 'false',
+			'sort' => 'rank'
 		), $atts);
 
 		$results = 	'<div class="ubc_delicious_results resource_listings" '.
@@ -233,7 +234,8 @@ class UBC_Delicious_Search {
 					'data-user="'.esc_attr($this->ubc_delicious_attributes['result']['defaultuser']).'" '.
 					'data-limit="'.esc_attr($this->ubc_delicious_attributes['result']['limit']).'" '.
 					'data-useor="'.esc_attr($this->ubc_delicious_attributes['result']['useor']).'" '.
-					'data-view="'.esc_attr($this->ubc_delicious_attributes['result']['view']).
+					'data-view="'.esc_attr($this->ubc_delicious_attributes['result']['view']).'" '.
+					'data-sort="'.esc_attr($this->ubc_delicious_attributes['result']['sort']).
 					'"></div>';
 		
 		return $results;
