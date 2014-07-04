@@ -42,6 +42,12 @@ Attributes:
 * optiontitle = title of the dropdown
 * extraclasses = classes to be add to the dropdown
 
+[ubc_delicious_checkbox optionslist=\'one, two, three::Three\' defaultoption=\"two,three\" optiontitle=\"checkbox main Label\" extraclasses=\"extra_classes\"]
+* optionslist = comma separated list of options in the dropdown in format: \"value, value\" or \"value::label, value2::label2\" or a mix of the two formats
+* defaultoption = comma separated list of values, if it matches a value in the optionslist, it will be checked by default
+* optiontitle = title of the checkbox section
+* extraclasses = classes to be add to the checkbox
+
 == Installation ==
 
 1. download plugin (and if compressed, uncompress)
