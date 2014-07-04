@@ -85,6 +85,22 @@ jQuery(document).ready(function() {
   	});
 
 	/**
+	 * detects changes in checkboxes to requery 
+	 *
+	 * @param void
+	 * @return void
+	 */
+	 jQuery('.ubc-delicious-checkbox').change(function(e) {
+  		if (jQuery('#ubc-delicious-submit').length) {
+  			jQuery('#ubc-delicious-submit').click();
+  		} else {
+  			var tags = get_all_current_tags(true);
+  			submit_delicious_query(search_url+'&tags='+ (tags.length > 0 ? '&tags='+tags : ''));
+		}
+  	});
+
+
+	/**
 	 * submits based on undocumented search json api
 	 * 
 	 * @param String query_url - absolute url of query string
@@ -109,7 +125,7 @@ jQuery(document).ready(function() {
 	        	} else {
 					var view_type = encodeURIComponent(jQuery('.resource_listings').data('view'));        	
 					var sort_order = encodeURIComponent(jQuery('.resource_listings').data('sort'));
-       	
+
 	        		//sort data according to sort_order
 	        		var new_pkg = jsonp.pkg.concat();
         			switch (sort_order) {
@@ -183,11 +199,16 @@ jQuery(document).ready(function() {
 	
 		var tags = [];
 		var selectz = jQuery('.ubc-delicious-dropdown');
-		var count = 1;
+		var checkz = jQuery('.ubc-delicious-checkbox');
 		jQuery.each(selectz, function(index, client) {
 			var select_val = jQuery(client).val().trim();
 			if (select_val != 'Show All') {
 				tags.push(encodeURIComponent(select_val));
+			}
+		});
+		jQuery.each(checkz, function(index, client) {
+			if (client.checked) {
+				tags.push(encodeURIComponent(jQuery(client).val().trim()));
 			}
 		});
 		

@@ -27,7 +27,10 @@ class UBC_Delicious_Search {
 	
 	function __construct() {
 		add_action('init', array($this, 'register_shortcodes' ));
-
+		add_action('wp_enqueue_scripts',  array($this, 'register_scripts'));
+	}
+	
+	public function register_scripts() {
 		wp_register_script('ubc-delicious-search', plugin_dir_url(__FILE__).'/js/ubc_delicious_search.js', array('jquery'));
 		wp_register_style('ubc-delicious-search', plugin_dir_url(__FILE__).'/css/ubc_delicious_search.css');
 	}
@@ -43,6 +46,7 @@ class UBC_Delicious_Search {
 		$this->add_shortcode( 'ubc_delicious_results', 'ubc_delicious_results' );
 		$this->add_shortcode( 'ubc_delicious_search', 'ubc_delicious_search' );
 		$this->add_shortcode( 'ubc_delicious_dropdown', 'ubc_delicious_dropdown' );
+		$this->add_shortcode( 'ubc_delicious_checkbox', 'ubc_delicious_checkbox' );
 	}
 	
 	/**
@@ -138,7 +142,7 @@ class UBC_Delicious_Search {
 	/**
 	 * creates options for the dropdown.
 	 * 
-	 * eg1: [ubc_delicious_dropdown optionlist="value::label, value2"
+	 * eg1: [ubc_delicious_dropdown optionlist="value::label, value2"]
 	 * @param unknown $atts
 	 * @param string $content
 	 * @return string
@@ -202,6 +206,75 @@ class UBC_Delicious_Search {
 
 		return $return_val;
 	}
+	
+	/**
+	 * creates checkboxes for tags
+	 *
+	 * eg1: [ubc_delicious_dropdown optionlist="value::label, value2"]
+	 * @param unknown $atts
+	 * @param string $content
+	 * @return string
+	 */
+	function ubc_delicious_checkbox($atts, $content = null) {
+		//enqueue script/css
+		wp_enqueue_script('ubc-delicious-search');
+		wp_enqueue_style('ubc-delicious-search');
+	
+		$this->ubc_delicious_attributes['checkbox'] = shortcode_atts(array(
+			'optionslist' => '',			//list of options
+			'defaultoption' => '',			//comma separated VALUE of checkboxes to make checked
+			'optiontitle' => '',			//label for the dropdown
+			'extraclasses' => ''			//extra classes!
+		), $atts);
+	
+		//escaping values
+		$optiontitle = esc_html(trim($this->ubc_delicious_attributes['checkbox']['optiontitle']));
+		$extraclasses = esc_attr(trim($this->ubc_delicious_attributes['checkbox']['extraclasses']));
+	
+		//output for the function
+		$return_val = '';
+	
+		//figure out and create options for the select
+		if (!empty($this->ubc_delicious_attributes['checkbox']['optionslist'])) {
+			$raw_parsed = explode(',', $this->ubc_delicious_attributes['checkbox']['optionslist']);
+			$raw_checked = explode(',', $this->ubc_delicious_attributes['checkbox']['defaultoption']);
+			$checkbox_options = null;
+		
+			//clean up arrays to trim everything
+			$raw_parsed = array_map("trim", $raw_parsed);
+			$raw_checked = array_map("trim", $raw_checked);
+				
+			//add rest of options
+			foreach ($raw_parsed as $single_option) {
+				$checkbox_raw = explode('::', $single_option);
+				if ($checkbox_raw === false) {
+					continue;
+				} else if (count($checkbox_raw) == 1) {
+					$checkbox_raw[] = $checkbox_raw[0];
+				}
+					
+				//if option value matches optiontitle, then make it default
+				$is_selected = in_array(trim($checkbox_raw[0]), $raw_checked);
+				$checkbox_options[] = '<input name="ubc-delicious-checkbox" class="ubc-delicious-checkbox" type="checkbox" '.($is_selected? 'checked':'').' value="'.esc_attr($checkbox_raw[0]).'">'.esc_html($checkbox_raw[1]).'<br>';
+			}
+			ob_start();
+			?>
+				<div class="ubc-delicious-checkbox-area <?php echo $extraclasses;?>">
+					<span class="ubc-delicious-label-title"><?php echo $optiontitle;?></span>
+			<?php 
+				foreach ($checkbox_options as $checkbox_option) {
+			?>
+					<label class="ubc-delicious-checkbox-label">
+						<?php echo $checkbox_option;?>
+					</label>
+		<?php	} ?>
+				</div>
+				<?php 
+				$return_val = ob_get_clean();
+			}		
+	
+			return $return_val;
+		}
 	
 	/**
 	 * creates the div where the results should show
