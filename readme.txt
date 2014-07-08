@@ -13,18 +13,29 @@ Allows you to create searching and filtering from delicious to your WordPress si
 This plugin uses a series or shortcodes to allow one to create searching and filtering of links from delicious.
 
 To use, there are a number of shortcodes working together to make it all work.
+[ubc_delicious_results_once] - allows user to create any number of results area that is not searchable/filterable.
 [ubc_delicious_results] - creates the area which will contain the search results
 [ubc_delicious_search] - creates a search input box as well as search button
 [ubc_delicious_dropdown] - meant to be used to create dropdown of tags
+[ubc_delicious_checkbox] - creates a checkbox list of tags
 
-
-[ubc_delicious_results limit=20 defaulttag=\"defaul_tag\" defaultuser=\"default_user\" useor=\"false\" sort=\"rank\"]
+[ubc_delicious_results_once limit=20 defaulttag=\"defaul_tag\" defaultuser=\"default_user\" useor=\"false\" sort=\"rank\" view=\"list\"]
 Attributes:
 * limit = maximum number of items to load (max is 200)
 * defaulttag = tag to load up when page first loads
 * defaultuser = (REQUIRED) field to determine which account to query from
 * useor - if true, or all tags, else and all tags
 * sort - sort list returned from delicious (valid alpha and rank)
+* view - default is list(alias for list_unordered), but other valid values are: links, list_ordered
+
+[ubc_delicious_results limit=20 defaulttag=\"defaul_tag\" defaultuser=\"default_user\" useor=\"false\" sort=\"rank\" view=\"list\"]
+Attributes:
+* limit = maximum number of items to load (max is 200)
+* defaulttag = tag to load up when page first loads
+* defaultuser = (REQUIRED) field to determine which account to query from
+* useor - if true, or all tags, else and all tags
+* sort - sort list returned from delicious (valid alpha and rank)
+* view - default is list(alias for list_unordered), but other valid values are: links, list_ordered
 
 [ubc_delicious_search placeholder=\"Search Words\" submittext=\"Submit\" searchtitle=\"Search\" extraclasses=\"classes_for_dropdown\" butonclasses=\"classes_for_button\"]
 Attributes:

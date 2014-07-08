@@ -5,7 +5,8 @@ jQuery(document).ready(function() {
 	var default_useor = encodeURIComponent(jQuery('.resource_listings').data('useor'));
 	var reset_button =jQuery('#ubc-delicious-reset');
 	var feed_url = 'http://feeds.delicious.com/v2/json/'+default_user; //left it here so that if search is destroyed, we can still use filters
-	var search_url = 'https://avosapi.delicious.com/api/v1/posts/public/'+default_user+'/time?limit='+default_limit+'&has_all=true&tagsor='+default_useor;
+	var search_base_url = 'https://avosapi.delicious.com/api/v1/posts/public/';
+	var search_url = search_base_url+default_user+'/time?limit='+default_limit+'&has_all=true&tagsor='+default_useor;
 	
 	//if reset exists, then reset form
 	if (reset_button.length > 0) {
@@ -13,9 +14,8 @@ jQuery(document).ready(function() {
 			//don't submit
 			e.preventDefault();
 			
-			//reset all non select inputs
-			jQuery('.ubc-delicious-input:not(select)').val('');	
-			
+			//reset all non select/checkbox inputs
+			jQuery('.ubc-delicious-input:not(select), .ubc-delicious-input:not(:checkbox)').val('');	
 			
 			//reset select boxes
 			jQuery('select.ubc-delicious-input').prop('selectedIndex', 0);
@@ -27,14 +27,41 @@ jQuery(document).ready(function() {
 				}
 			});
 			
+			//properly resets checkboxes
+			jQuery('.ubc-delicious-checkbox-area input').each(function(index, checkbox_client) {
+				if (checkbox_client.defaultChecked) {
+					this.checked = true;
+				} else {
+					this.checked = false;
+				}
+			});
+			
 			//re-query again.  Since we are in reset, if it exists, then submit MUST exist
 			jQuery('#ubc-delicious-submit').click();
 		});
 	} 
 
-	//initial submission of query.
-	submit_delicious_query(search_url+'&tags='+default_tag);
+	//initial submission of query for the filterable search result area
+	submit_delicious_query(search_url+'&tags='+get_all_current_tags(true));
+	
+	//inital loading of non-filterable/searchable search result once area
+	var results_once = jQuery('.ubc_delicious_results_once');
+	if (results_once.length > 0) {
+		results_once.each(function(index, client) {
+			var once_user = encodeURIComponent(jQuery(client).data('user')); 
+			var once_limit = encodeURIComponent(jQuery(client).data('limit')); 
+			var once_tag = jQuery(client).data('defaulttag');
+			var once_useor = encodeURIComponent(jQuery(client).data('useor'));
+			
+			//clean up tags for cases where tag is a longer comma separated list of tags
+			var tags = [];
+			jQuery.each(once_tag.split(','), function(index, sub_client) {
+				tags.push(sub_client.trim());
+			})
 
+			submit_delicious_query(search_base_url+once_user+'/time?limit='+once_limit+'&has_all=true&tagsor='+once_useor+'&tags='+encodeURIComponent(tags.join(',')), client);
+		});
+	}
   	/**
   	 * search submit function 
   	 * 
@@ -104,18 +131,22 @@ jQuery(document).ready(function() {
 	 * submits based on undocumented search json api
 	 * 
 	 * @param String query_url - absolute url of query string
+	 * @param object dom - Dom object to write results to
 	 * @return void - if results return, fill in result area with list.
 	 */
-	function submit_delicious_query(query_url) {
+	function submit_delicious_query(query_url, dom) {
 		//include tags
 		jQuery.ajax({
 	        type: 'GET',
 	        url: query_url,
 	        dataType: 'jsonp',
 	        success: function (jsonp) {
-	        	var write_area = jQuery('.resource_listings');
 				var return_string = '';
-
+	        	var write_area = jQuery('.ubc_delicious_results.resource_listings', dom);
+				if (typeof dom != 'undefined') {
+					write_area = jQuery(dom);
+				}
+			
 				//delete everything
 	    		write_area.empty().children().remove().empty();
 	    		
@@ -123,8 +154,8 @@ jQuery(document).ready(function() {
 	    		if (jQuery(jsonp.pkg).length == 0) {
 	        		write_area.append('sorry, no results, please broaden search parameters');
 	        	} else {
-					var view_type = encodeURIComponent(jQuery('.resource_listings').data('view'));        	
-					var sort_order = encodeURIComponent(jQuery('.resource_listings').data('sort'));
+					var view_type = encodeURIComponent(write_area.data('view'));        	
+					var sort_order = encodeURIComponent(write_area.data('sort'));
 
 	        		//sort data according to sort_order
 	        		var new_pkg = jsonp.pkg.concat();
@@ -180,7 +211,7 @@ jQuery(document).ready(function() {
 	        					return_string += '</ol>';
 							}
 	        				break;
-					}	
+					}				
 	        		write_area.append(return_string);
 		        }
 	        }
@@ -203,7 +234,7 @@ jQuery(document).ready(function() {
 		jQuery.each(selectz, function(index, client) {
 			var select_val = jQuery(client).val().trim();
 			if (select_val != 'Show All') {
-				tags.push(encodeURIComponent(select_val));
+				tags.push(encodeURIComponent(select_val.trim()));
 			}
 		});
 		jQuery.each(checkz, function(index, client) {

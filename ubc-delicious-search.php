@@ -47,6 +47,7 @@ class UBC_Delicious_Search {
 		$this->add_shortcode( 'ubc_delicious_search', 'ubc_delicious_search' );
 		$this->add_shortcode( 'ubc_delicious_dropdown', 'ubc_delicious_dropdown' );
 		$this->add_shortcode( 'ubc_delicious_checkbox', 'ubc_delicious_checkbox' );
+		$this->add_shortcode( 'ubc_delicious_results_once', 'ubc_delicious_results_once' );
 	}
 	
 	/**
@@ -210,7 +211,7 @@ class UBC_Delicious_Search {
 	/**
 	 * creates checkboxes for tags
 	 *
-	 * eg1: [ubc_delicious_dropdown optionlist="value::label, value2"]
+	 * eg1: [ubc_delicious_checkbox optionlist="value::label, value2"]
 	 * @param unknown $atts
 	 * @param string $content
 	 * @return string
@@ -221,10 +222,10 @@ class UBC_Delicious_Search {
 		wp_enqueue_style('ubc-delicious-search');
 	
 		$this->ubc_delicious_attributes['checkbox'] = shortcode_atts(array(
-			'optionslist' => '',			//list of options
-			'defaultoption' => '',			//comma separated VALUE of checkboxes to make checked
-			'optiontitle' => '',			//label for the dropdown
-			'extraclasses' => ''			//extra classes!
+				'optionslist' => '',			//list of options
+				'defaultoption' => '',			//comma separated VALUE of checkboxes to make checked
+				'optiontitle' => '',			//label for the dropdown
+				'extraclasses' => ''			//extra classes!
 		), $atts);
 	
 		//escaping values
@@ -277,7 +278,7 @@ class UBC_Delicious_Search {
 		}
 	
 	/**
-	 * creates the div where the results should show
+	 * creates the div where the results of the filter/searching should show
 	 *
 	 * @access public
 	 * @param array $atts 
@@ -293,7 +294,7 @@ class UBC_Delicious_Search {
 		wp_enqueue_script('ubc-delicious-search');
 		wp_enqueue_style('ubc-delicious-search');
 		
-		$this->ubc_delicious_attributes['result'] = shortcode_atts(array(
+		$this->ubc_delicious_attributes['results'] = shortcode_atts(array(
 			'limit' => 20,
 			'defaulttag' => '',
 			'defaultuser' => '',
@@ -303,14 +304,52 @@ class UBC_Delicious_Search {
 		), $atts);
 
 		$results = 	'<div class="ubc_delicious_results resource_listings" '.
-					'data-defaulttag="'.esc_attr($this->ubc_delicious_attributes['result']['defaulttag']).'" '.
-					'data-user="'.esc_attr($this->ubc_delicious_attributes['result']['defaultuser']).'" '.
-					'data-limit="'.esc_attr($this->ubc_delicious_attributes['result']['limit']).'" '.
-					'data-useor="'.esc_attr($this->ubc_delicious_attributes['result']['useor']).'" '.
-					'data-view="'.esc_attr($this->ubc_delicious_attributes['result']['view']).'" '.
-					'data-sort="'.esc_attr($this->ubc_delicious_attributes['result']['sort']).
+					'data-defaulttag="'.esc_attr($this->ubc_delicious_attributes['results']['defaulttag']).'" '.
+					'data-user="'.esc_attr($this->ubc_delicious_attributes['results']['defaultuser']).'" '.
+					'data-limit="'.esc_attr($this->ubc_delicious_attributes['results']['limit']).'" '.
+					'data-useor="'.esc_attr($this->ubc_delicious_attributes['results']['useor']).'" '.
+					'data-view="'.esc_attr($this->ubc_delicious_attributes['results']['view']).'" '.
+					'data-sort="'.esc_attr($this->ubc_delicious_attributes['results']['sort']).
 					'"></div>';
 		
+		return $results;
+	}
+	
+	/**
+	 * creates the div where the results show only upon page load.  no filter/search
+	 *
+	 * @access public
+	 * @param array $atts
+	 * @param string $content
+	 * @return string
+	 *
+	 *@TODO
+	 * - need to give errors when leaving default user blank.  Maybe make it into settings???
+	 *
+	 */
+	function ubc_delicious_results_once($atts, $content = null) {
+		//enqueue script/css
+		wp_enqueue_script('ubc-delicious-search');
+		wp_enqueue_style('ubc-delicious-search');
+	
+		$this->ubc_delicious_attributes['results_once'] = shortcode_atts(array(
+				'limit' => 20,
+				'defaulttag' => '',
+				'defaultuser' => '',
+				'view' => 'list',
+				'useor' => 'false',
+				'sort' => 'rank'
+		), $atts);
+	
+		$results = 	'<div class="ubc_delicious_results_once resource_listings" '.
+				'data-defaulttag="'.esc_attr($this->ubc_delicious_attributes['results_once']['defaulttag']).'" '.
+				'data-user="'.esc_attr($this->ubc_delicious_attributes['results_once']['defaultuser']).'" '.
+				'data-limit="'.esc_attr($this->ubc_delicious_attributes['results_once']['limit']).'" '.
+				'data-useor="'.esc_attr($this->ubc_delicious_attributes['results_once']['useor']).'" '.
+				'data-view="'.esc_attr($this->ubc_delicious_attributes['results_once']['view']).'" '.
+				'data-sort="'.esc_attr($this->ubc_delicious_attributes['results_once']['sort']).
+				'"></div>';
+	
 		return $results;
 	}
 }
