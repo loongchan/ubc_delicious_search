@@ -300,7 +300,8 @@ class UBC_Delicious_Search {
 			'defaultuser' => '',
 			'view' => 'list',
 			'useor' => 'false',
-			'sort' => 'rank'
+			'sort' => 'rank',
+			'showcomments' => 'true'
 		), $atts);
 
 		$results = 	'<div class="ubc_delicious_results resource_listings" '.
@@ -309,7 +310,8 @@ class UBC_Delicious_Search {
 					'data-limit="'.esc_attr($this->ubc_delicious_attributes['results']['limit']).'" '.
 					'data-useor="'.esc_attr($this->ubc_delicious_attributes['results']['useor']).'" '.
 					'data-view="'.esc_attr($this->ubc_delicious_attributes['results']['view']).'" '.
-					'data-sort="'.esc_attr($this->ubc_delicious_attributes['results']['sort']).
+					'data-sort="'.esc_attr($this->ubc_delicious_attributes['results']['sort']).'" '.
+					'data-showcomments="'.esc_attr($this->ubc_delicious_attributes['results']['showcomments']).
 					'"></div>';
 		
 		return $results;
@@ -338,7 +340,8 @@ class UBC_Delicious_Search {
 				'defaultuser' => '',
 				'view' => 'list',
 				'useor' => 'false',
-				'sort' => 'rank'
+				'sort' => 'rank',
+				'showcomments' => 'true'
 		), $atts);
 	
 		$results = 	'<div class="ubc_delicious_results_once resource_listings" '.
@@ -347,7 +350,8 @@ class UBC_Delicious_Search {
 				'data-limit="'.esc_attr($this->ubc_delicious_attributes['results_once']['limit']).'" '.
 				'data-useor="'.esc_attr($this->ubc_delicious_attributes['results_once']['useor']).'" '.
 				'data-view="'.esc_attr($this->ubc_delicious_attributes['results_once']['view']).'" '.
-				'data-sort="'.esc_attr($this->ubc_delicious_attributes['results_once']['sort']).
+				'data-sort="'.esc_attr($this->ubc_delicious_attributes['results_once']['sort']).'" '.
+				'data-showcomments="'.esc_attr($this->ubc_delicious_attributes['results_once']['showcomments']).
 				'"></div>';
 	
 		return $results;

@@ -152,9 +152,10 @@ jQuery(document).ready(function() {
 	    		
 				//display data
 	    		if (jQuery(jsonp.pkg).length == 0) {
-	        		write_area.append('sorry, no results, please broaden search parameters');
+	    			return_string += 'Sorry, no results, please broaden search parameters'
 	        	} else {
-					var view_type = encodeURIComponent(write_area.data('view'));        	
+					var view_type = encodeURIComponent(write_area.data('view'));
+					var showcomments = write_area.data('showcomments');        	
 					var sort_order = encodeURIComponent(write_area.data('sort'));
 
 	        		//sort data according to sort_order
@@ -179,14 +180,15 @@ jQuery(document).ready(function() {
         					});
         					break;
 					}
-	        	
+
 	        		//create links
 	        		switch (view_type) {
 	        			case 'links':
 							jQuery.each(new_pkg, function(index, client) {
 				        		var title= client.title;
 				        		var linkURL = client.url;
-								return_string += '<a target="_blank" href="'+linkURL+'">'+title+'</a><br>';
+				        		var comments = '<ul class="ubc_delicious_comments"><li>'+client.note+'</li></ul>';
+								return_string += '<a target="_blank" href="'+linkURL+'">'+title+'</a><br>'+(showcomments? comments : '' );
 							});
 							break;
 	        			case 'list':
@@ -202,7 +204,8 @@ jQuery(document).ready(function() {
 							jQuery.each(new_pkg, function(index, client) {
 				        		var title= client.title;
 				        		var linkURL = client.url;
-								return_string += '<li><a target="_blank" href="'+linkURL+'">'+title+'</a></li>';
+			        			var comments = '<ul class="ubc_delicious_comments"><li>'+client.note+'</li></ul>';
+								return_string += '<li><a target="_blank" href="'+linkURL+'">'+title+'</a>'+(showcomments? comments : '' )+'</li>';
 							});
 							
 							if (view_type != 'list_ordered') {
@@ -212,8 +215,8 @@ jQuery(document).ready(function() {
 							}
 	        				break;
 					}				
-	        		write_area.append(return_string);
 		        }
+		        write_area.append(return_string);
 	        }
 	    });
     }
