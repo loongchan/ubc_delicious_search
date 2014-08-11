@@ -1,8 +1,8 @@
 jQuery(document).ready(function() {
-	var default_user = encodeURIComponent(jQuery('.resource_listings').data('user')); 
-	var default_limit = encodeURIComponent(jQuery('.resource_listings').data('limit')); 
-	var default_tag = encodeURIComponent(jQuery('.resource_listings').data('defaulttag'));
-	var default_useor = encodeURIComponent(jQuery('.resource_listings').data('useor'));
+	var default_user = encodeURIComponent(jQuery('.ubc_delicious_results.resource_listings').data('user'));
+	var default_limit = encodeURIComponent(jQuery('.ubc_delicious_results.resource_listings').data('limit'));
+	var default_tag = encodeURIComponent(jQuery('.ubc_delicious_results.resource_listings').data('defaulttag'));
+	var default_useor = encodeURIComponent(jQuery('.ubc_delicious_results.resource_listings').data('useor'));
 	var reset_button =jQuery('#ubc-delicious-reset');
 	var feed_url = 'http://feeds.delicious.com/v2/json/'+default_user; //left it here so that if search is destroyed, we can still use filters
 	var search_base_url = 'https://avosapi.delicious.com/api/v1/posts/public/';
