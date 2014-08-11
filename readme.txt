@@ -27,6 +27,7 @@ Attributes:
 * useor - if true, or all tags, else and all tags
 * sort - sort list returned from delicious (valid alpha and rank)
 * view - default is list(alias for list_unordered), but other valid values are: links, list_ordered
+* showcomments - shows comment of each resource, default is true
 
 [ubc_delicious_results limit=20 defaulttag=\"defaul_tag\" defaultuser=\"default_user\" useor=\"false\" sort=\"rank\" view=\"list\"]
 Attributes:
@@ -36,6 +37,7 @@ Attributes:
 * useor - if true, or all tags, else and all tags
 * sort - sort list returned from delicious (valid alpha and rank)
 * view - default is list(alias for list_unordered), but other valid values are: links, list_ordered
+* showcomments - shows comment of each resource, default is true
 
 [ubc_delicious_search placeholder=\"Search Words\" submittext=\"Submit\" searchtitle=\"Search\" extraclasses=\"classes_for_dropdown\" butonclasses=\"classes_for_button\"]
 Attributes:

@@ -182,15 +182,18 @@ class UBC_Delicious_Search {
 			//add rest of options
 			foreach ($raw_parsed as $single_option) {
 				$dropdown_raw = explode('::', $single_option);
+				$dropdown_extra = '';	//variable to hold extra stuff, like disabled.
+
 				if ($dropdown_raw === false) {
 					continue;
 				} else if (count($dropdown_raw) == 1) {
 					$dropdown_raw[] = $dropdown_raw[0];
+				} else if (count($dropdown_raw) == 3) {
+					$dropdown_extra = $dropdown_raw[2];
 				}
-			
 				//if option value matches optiontitle, then make it default
 				$is_selected = trim($dropdown_raw[0]) == trim($this->ubc_delicious_attributes['dropdown']['defaultoption']);
-				$dropdown_options .= '<option '.($is_selected? 'selected="selected"':'').' value="'.esc_attr(trim($dropdown_raw[0])).'">'.esc_html(trim($dropdown_raw[1])).'</option>';
+				$dropdown_options .= '<option '.($is_selected? 'selected="selected"':'').' value="'.esc_attr(trim($dropdown_raw[0])).'" '.esc_attr($dropdown_extra).'>'.esc_html(trim($dropdown_raw[1])).'</option>';
 			}
 			ob_start();
 			?>
@@ -248,15 +251,23 @@ class UBC_Delicious_Search {
 			//add rest of options
 			foreach ($raw_parsed as $single_option) {
 				$checkbox_raw = explode('::', $single_option);
+				$checkbox_extra = '';	//variable to hold extra stuff, like disabled.
+
 				if ($checkbox_raw === false) {
 					continue;
 				} else if (count($checkbox_raw) == 1) {
 					$checkbox_raw[] = $checkbox_raw[0];
+				} else if (count($checkbox_raw) == 3) {
+					if (strtolower($checkbox_raw[2]) === 'disabled') {
+						$checkbox_extra = 'disabled="disabled"';
+					} else {
+						$checkbox_extra = $checkbox_raw[2];
+					}
 				}
 					
 				//if option value matches optiontitle, then make it default
 				$is_selected = in_array(trim($checkbox_raw[0]), $raw_checked);
-				$checkbox_options[] = '<input name="ubc-delicious-checkbox" class="ubc-delicious-checkbox" type="checkbox" '.($is_selected? 'checked':'').' value="'.esc_attr($checkbox_raw[0]).'">'.esc_html($checkbox_raw[1]).'<br>';
+				$checkbox_options[] = '<input name="ubc-delicious-checkbox" class="ubc-delicious-checkbox" type="checkbox" '.($is_selected? 'checked':'').' value="'.esc_attr($checkbox_raw[0]).'" '.esc_attr($checkbox_extra).'>'.esc_html($checkbox_raw[1]).'<br>';
 			}
 			ob_start();
 			?>
@@ -300,7 +311,8 @@ class UBC_Delicious_Search {
 			'defaultuser' => '',
 			'view' => 'list',
 			'useor' => 'false',
-			'sort' => 'rank'
+			'sort' => 'rank',
+			'showcomments' => 'true'
 		), $atts);
 
 		$results = 	'<div class="ubc_delicious_results resource_listings" '.
@@ -309,7 +321,8 @@ class UBC_Delicious_Search {
 					'data-limit="'.esc_attr($this->ubc_delicious_attributes['results']['limit']).'" '.
 					'data-useor="'.esc_attr($this->ubc_delicious_attributes['results']['useor']).'" '.
 					'data-view="'.esc_attr($this->ubc_delicious_attributes['results']['view']).'" '.
-					'data-sort="'.esc_attr($this->ubc_delicious_attributes['results']['sort']).
+					'data-sort="'.esc_attr($this->ubc_delicious_attributes['results']['sort']).'" '.
+					'data-showcomments="'.esc_attr($this->ubc_delicious_attributes['results']['showcomments']).
 					'"></div>';
 		
 		return $results;
@@ -338,7 +351,8 @@ class UBC_Delicious_Search {
 				'defaultuser' => '',
 				'view' => 'list',
 				'useor' => 'false',
-				'sort' => 'rank'
+				'sort' => 'rank',
+				'showcomments' => 'true'
 		), $atts);
 	
 		$results = 	'<div class="ubc_delicious_results_once resource_listings" '.
@@ -347,7 +361,8 @@ class UBC_Delicious_Search {
 				'data-limit="'.esc_attr($this->ubc_delicious_attributes['results_once']['limit']).'" '.
 				'data-useor="'.esc_attr($this->ubc_delicious_attributes['results_once']['useor']).'" '.
 				'data-view="'.esc_attr($this->ubc_delicious_attributes['results_once']['view']).'" '.
-				'data-sort="'.esc_attr($this->ubc_delicious_attributes['results_once']['sort']).
+				'data-sort="'.esc_attr($this->ubc_delicious_attributes['results_once']['sort']).'" '.
+				'data-showcomments="'.esc_attr($this->ubc_delicious_attributes['results_once']['showcomments']).
 				'"></div>';
 	
 		return $results;
